@@ -1,0 +1,26 @@
+{
+  "name": "flowerbot",
+  "version": "1.0.0",
+  "description": "Grammy-nominated package for exercising the 1800Flowers PWA prerender.io cache by crawling from the homepage",
+  "main": "index.js",
+  "dependencies": {
+    "crawler": "^1.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cgbuen/flowerbot"
+  },
+  "keywords": [
+    "yeah",
+    "boyeeeeee"
+  ],
+  "author": "cgbuen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cgbuen/flowerbot/issues"
+  }
+}
