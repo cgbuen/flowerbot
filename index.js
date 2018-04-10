@@ -20,40 +20,37 @@ let c = new Crawler(options)
 
 let callbackOuter = c => {
   return (error, res, done) => {
+    let $ = res.$
     if (error) {
-      console.log(error, res.request.uri.href)
-    } else {
-      if (debug) {
-        console.log("==>", res.request.uri.href)
-      }
-      let $ = res.$
-      if ($) {
-        $("a[href^='/']").each(function() {
-          let path = $(this).attr("href")
-          if (!path.startsWith("//")) {
-            if (!cache[host + path]) {
-              c.queue([{
+      console.log(error, res.request.uri.href, res.options && res.options.uri)
+    } else if ($) {
+      debug && console.log("==>", res.options.uri)
+      let queue = [];
+      $("a[href^='/']").each(function() {
+        let path = $(this).attr("href")
+        if (!path.startsWith("//")) {
+          if (!cache[host + path]) {
+            try {
+              cache[host + path] = {
+                depth: cache[res.options.uri].depth + 1,
+                referers: []
+              }
+              queue.push({
                 uri: host + path,
                 callback: callbackOuter(c)
-              }])
-              try {
-                cache[host + path] = {
-                  depth: cache[res.request.uri.href].depth + 1,
-                  referers: []
-                }
-              } catch (e) {
-                console.log(e)
-                if (debug) {
-                  console.log(cache)
-                }
-              }
-            }
-            if (debug && cache[host + path].depth > 3) {
-              cache[host + path].referers.push(res.request.uri.path)
+              })
+            } catch (e) {
+              console.log(`ERR: ${host + path} not added to crawl queue`)
+              console.log(e)
+              debug && console.log(cache)
             }
           }
-        })
-      }
+          debug && cache[host + path].depth > 3 && cache[host + path].referers.push(res.request.uri.path)
+        }
+      })
+      c.queue(queue)
+    } else {
+      debug && console.log("==> ERR: Could not initialize Cheerio for", res.request.uri.href, res.options && res.options.uri)
     }
     done()
   }
@@ -65,8 +62,6 @@ c.queue([{
 }])
 
 c.on("drain", () => {
-  console.log(`Cache exercising complete. ${Object.keys(cache).length} total pages crawled.`)
-  if (debug) {
-    console.log(JSON.stringify(cache))
-  }
+  console.log(`Crawl complete. ${Object.keys(cache).length} total pages crawled.`)
+  debug && console.log(`\nCrawl cache:\n${JSON.stringify(cache)}`)
 })
