@@ -1,24 +1,24 @@
-let environment = process.argv[2]
-let ua = process.argv[3] || "moov-prerender-cache-exerciser"
-let debug = process.argv[4]
+const environment = process.argv[2]
+const ua = process.argv[3] || "moov-prerender-cache-exerciser"
+const debug = process.argv[4]
 
-let Crawler = require("crawler")
+const Crawler = require("crawler")
 
-let host = `https://${environment}.1800flowers.com`
-let cache = {
+const host = `https://${environment}.1800flowers.com`
+const cache = {
   [host + "/"]: {
     depth: 1,
     referers: []
   }
 }
-let options = {
+const options = {
   userAgent: ua,
   maxConnections: 10,
   retryTimeout: 1
 }
-let c = new Crawler(options)
+const c = new Crawler(options)
 
-let exclusions = [
+const exclusions = [
   "//",
   "/faq",
   "/sitemap-1800flowers",
@@ -28,17 +28,16 @@ let exclusions = [
   "/flower-clubs"
 ]
 
-let callbackOuter = c => {
+const callbackOuter = c => {
   return (error, res, done) => {
-    let $ = res.$
+    const $ = res.$
     if (error) {
       console.log(error, res.request.uri.href, res.options && res.options.uri)
     } else if ($) {
       debug && console.log("==>", res.options.uri)
-      let queue = []
+      const queue = []
       $("a[href^='/']").each(function() {
-        let $this = $(this)
-        let path = $this.attr("href")
+        const path = $(this).attr("href")
         if (!exclusions.reduce((acc, cv) => path.startsWith(cv) || acc, false)) {
           if (!cache[host + path]) {
             try {
