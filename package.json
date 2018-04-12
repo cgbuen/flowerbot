@@ -4,7 +4,8 @@
   "description": "Grammy-nominated package for exercising the 1800Flowers PWA prerender.io cache by crawling from the homepage",
   "main": "index.js",
   "dependencies": {
-    "crawler": "^1.1.2"
+    "crawler": "^1.1.2",
+    "lodash": "^4.17.5"
   },
   "devDependencies": {},
   "scripts": {
