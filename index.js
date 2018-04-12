@@ -3,7 +3,6 @@ let ua = process.argv[3] || "moov-prerender-cache-exerciser"
 let debug = process.argv[4]
 
 let Crawler = require("crawler")
-let { padStart } = require("lodash")
 
 let host = `https://${environment}.1800flowers.com`
 let cache = {
@@ -36,7 +35,7 @@ let callbackOuter = c => {
       console.log(error, res.request.uri.href, res.options && res.options.uri)
     } else if ($) {
       debug && console.log("==>", res.options.uri)
-      let queue = [];
+      let queue = []
       $("a[href^='/']").each(function() {
         let $this = $(this)
         let path = $this.attr("href")
@@ -69,15 +68,15 @@ let callbackOuter = c => {
 }
 
 
-const startTime = new Date();
-console.log(`--> ${padStart(startTime.getUTCHours(), 2, 0)}:${padStart(startTime.getUTCMinutes(), 2, 0)}:${padStart(startTime.getUTCSeconds(), 2, 0)} Starting crawl.`);
+const startTime = new Date()
+console.log(`--> ${startTime.toUTCString()} Starting crawl.`)
 c.queue([{
   uri: host + '/',
   callback: callbackOuter(c)
 }])
 
 c.on("drain", () => {
-  const endTime = new Date();
-  console.log(`--> ${padStart(endTime.getUTCHours(), 2, 0)}:${padStart(endTime.getUTCMinutes(), 2, 0)}:${padStart(endTime.getUTCSeconds(), 2, 0)} Crawl complete. ${Object.keys(cache).length} total pages crawled. Took ${(endTime - startTime)/1000} seconds to complete.`);
+  const endTime = new Date()
+  console.log(`--> ${endTime.toUTCString()} Crawl complete. ${Object.keys(cache).length} total pages crawled. Took ${(endTime - startTime)/1000} seconds to complete.`)
   debug && console.log(`\nCrawl cache:\n${JSON.stringify(cache)}`)
 })
